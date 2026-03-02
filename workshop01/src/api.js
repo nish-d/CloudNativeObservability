@@ -2,7 +2,7 @@ const {trace, SpanKind, SpanStatusCode} = require('@opentelemetry/api')
 const {ATTR_HTTP_REQUEST_METHOD, ATTR_URL_PATH} = require('@opentelemetry/semantic-conventions')
 
 const express = require('express')
-const {randomDelay, injectFault} = require('./utils')
+const { randomDelay, injectFault } = require ('./utils')
 
 const metadata = require('../package.json')
 const serviceName = metadata.name
@@ -16,7 +16,7 @@ function BooksAPI(booksDB, logger) {
 
     // TODO: Task 5
     // TODO: get tracer
-    this.tracer = trace.getTracer(serviceName, serviceVersion);
+    this.tracer = trace.getTracer(serviceName, serviceVersion)
 
     this.router.get('/search', async (req, resp) => {
 
@@ -28,37 +28,35 @@ function BooksAPI(booksDB, logger) {
 
             // TODO: Task 5
             // TODO: start active span as server
-            this.tracer.startActiveSpan('search',
-                {kind: SpanKind.SERVER},
-                async (span) => {
+            this.tracer.startActiveSpan('search', { kind: SpanKind.SERVER }, async (span) => {
+
+                // TODO: Task 5
+                // TODO: set span attributes
+                span.setAttribute({
+                    [ ATTR_URL_PATH ]: '/search',
+                    [ ATTR_HTTP_REQUEST_METHOD ]: req.method,
+                    'http.full_request': req.path
+                })
+
+                // Inject syntactic fault fault
+                let error = injectFault(req, this.logger)
+                if (!!error) {
+                    this.logger.error(req.originalUrl, error)
                     // TODO: Task 5
-                    // TODO: set span attributes
-                    span.setAttribute(
-                        {
-                            [ATTR_URL_PATH]: req.path,
-                            [ATTR_HTTP_REQUEST_METHOD]: req.method,
-                        }
-                    )
+                    // TODO: record error and set error status
+                    span.recordException(error)
+                    span.setStatus({
+                        code: SpanStatusCode.ERROR,
+                        message: error.message
+                    })
 
-                    // Inject syntactic fault fault
-                    let error = injectFault(req, this.logger)
-                    if (!!error) {
-                        this.logger.error(req.originalUrl, error)
-                        // TODO: Task 5
-                        // TODO: record error and set error status
-                        span.recordException(error)
-                        span.status({
-                            code: SpanStatusCode.ERROR,
-                            message: error.message
-                        })
+                    // TODO: Task 5
+                    // TODO: close the span
+                    span.end()
 
-                        // TODO: Task 5
-                        // TODO: close the span
-                        span.end()
-
-                        resp.status(error.status).json({message: error.message, injected: true})
-                        return
-                    }
+                    resp.status(error.status).json({ message: error.message, injected: true })
+                    return
+                }
 
                     if (!text) {
                         let message = 'No search terms'
@@ -66,7 +64,7 @@ function BooksAPI(booksDB, logger) {
                         // TODO: Task 5
                         // TODO: record error and set error status
                         span.recordException(error)
-                        span.status({
+                        span.setStatus({
                             code: SpanStatusCode.ERROR,
                             message: error.message
                         })
@@ -88,11 +86,11 @@ function BooksAPI(booksDB, logger) {
                         this.logger.error(req.originalUrl, error)
                         // TODO: Task 5
                         // TODO: record error and set error status
-                        span.recordException(error)
-                        span.status({
-                            code: SpanStatusCode.ERROR,
-                            message: error.message
-                        })
+                        // span.recordException(error)
+                        // span.setStatus({
+                        //     code: SpanStatusCode.ERROR,
+                        //     message: error.message
+                        // })
 
                         resp.status(500).json(error)
                     } finally {
@@ -101,11 +99,11 @@ function BooksAPI(booksDB, logger) {
                         span.end()
                     }
 
-                    // TODO: Task 5
-                    // TODO: end active span as server
+                // TODO: Task 5
+                // TODO: end active span as server
+            })
 
-                }, randomDelay(1, 5))
-        })
+        }, randomDelay(1, 5))
     })
 
     this.router.get('/books', async (req, resp) => {
@@ -119,13 +117,13 @@ function BooksAPI(booksDB, logger) {
             let error = injectFault(req, this.logger)
             if (!!error) {
                 this.logger.error(req.originalUrl, error)
-                resp.status(error.status).json({message: error.message, injected: true})
+                resp.status(error.status).json({ message: error.message, injected: true })
                 return
             }
 
             try {
                 const result = await this.booksDB.listBooks(count, rating)
-                resp.status(200).json({timestamp: Date.now(), result})
+                resp.status(200).json({ timestamp: Date.now(), result })
 
             } catch (error) {
                 this.logger.error(req.originalUrl, error)
@@ -145,17 +143,17 @@ function BooksAPI(booksDB, logger) {
             let error = injectFault(req, this.logger)
             if (!!error) {
                 this.logger.error(req.originalUrl, error)
-                resp.status(error.status).json({message: error.message, injected: true})
+                resp.status(error.status).json({ message: error.message, injected: true })
                 return
             }
 
             try {
                 const result = await this.booksDB.getBookByISBN13(isbn13)
                 if (!result)
-                    return resp.status(404).json({message: `ISBN13 ${isbn13} not found`})
+                    return resp.status(404).json({ message: `ISBN13 ${isbn13} not found` })
 
                 resp.status(200)
-                    .json({timestamp: Date.now(), ...result})
+                    .json({ timestamp: Date.now(), ...result })
 
             } catch (error) {
                 this.logger.error(req.originalUrl, error)

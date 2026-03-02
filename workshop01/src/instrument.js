@@ -49,8 +49,6 @@ const sdk = new NodeSDK({
     }
 )
 
-// Start the sdk
-sdk.start()
 
 process.on('SIGTERM', async() => {
   // TODO: Task 2
@@ -60,5 +58,6 @@ process.on('SIGTERM', async() => {
 
 // TODO: Task 2
 // TODO: start instrumentation
+sdk.start()
 
 console.info('Starting instrumentation')
