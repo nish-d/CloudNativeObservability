@@ -1,0 +1,8 @@
+a. service.name, service.version , severity
+b. { service_name="books"} |= "getBookByISBN13"
+c. ({ service_name="books", severity="ERROR"} |= "getBookByISBN13")
+d. sum by(severity) (count_over_time({service_name="books"} |= `/search` [1h])))
+
+
+
+{$__tags} | logfmt | trace_id = "${__trace.traceId}"
