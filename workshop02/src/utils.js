@@ -1,4 +1,4 @@
-const errorRate = parseFloat(process.env.ERROR_INJECTION_RATE) || 50
+const errorRate = parseFloat(process.env.ERROR_INJECTION_RATE) || 10
 const enabledRoutes = process.env.ERROR_INJECTION_ROUTES?.split(',') || ['all']
 const errorTypes = [
   { status: 500, message: 'Random server error injected' },
@@ -7,7 +7,7 @@ const errorTypes = [
   { status: 408, message: 'Request timeout' }
 ]
 
-const databaseErrorRate = parseInt(process.env.DB_ERROR_INJECTION_RATE) || 25
+const databaseErrorRate = parseInt(process.env.DB_ERROR_INJECTION_RATE) || 10
 const databaseErrors = [
   new Error('Error 1054: Unknown column "column_name" in "field list"'),
   new Error('Connection lost: The server closed the connection'),
