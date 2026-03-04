@@ -1,0 +1,10 @@
+a. http_request_int_total{url_path="/search"}
+b.sum(http_request_int_total{url_path="/search"}) by (http_response_status_code)
+c.http_request_int_total{url_path="/search", http_response_status_code="200"}
+d.http_request_duration_ms_milliseconds{url_path="/search", http_response_status_code="200"}
+e. histogram_quantile(.5,
+sum by(le) (
+    rate(https_request_duration_ms_milliseconds_bucket{url_path="/search",
+    http_response_status_code="200}[5m])
+    )
+    )

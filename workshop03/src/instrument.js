@@ -16,7 +16,7 @@ const { BatchLogRecordProcessor } = require('@opentelemetry/sdk-logs')
 // Metrics
 const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics')
 const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-grpc')
-
+const { PrometheusExporter } = require('@opentelemetry/exporter-prometheus')
 const metadata = require('../package.json')
 const serviceName = metadata.name
 const serviceVersion = metadata.version
@@ -35,13 +35,26 @@ const metricReaders = []
 // TODO: Create metric exporters, enable only one
 if ((ENABLE_PROM.toLowerCase() === 'yes') || (ENABLE_PROM.toLowerCase() === 'true')) {
   // TODO: Task 2 - Creaet Prometheus exporter
-
-  metricReaders.push(/* Prometheus exporter */)
+  console.info('Enabling Prometheus Metric exporter (Pull)')
+  const promExporter = new PrometheusExporter({
+    port: PROM_PORT,
+    endpoint: PROM_ENDPOINT,
+  })
+  metricReaders.push(promExporter/* Prometheus exporter */)
 
 } else {
   // TODO: Task 2 - Create metric OTLP exporter and metric reader
-
-  metricReaders.push(/* otlp metric reader */)
+  // Default
+  console.info('Enabling OTLP Metric exporter (Push)')
+  //Push exporter
+  const otlpMetricExporter = new OTLPMetricExporter({
+    url: `http://${OTEL_COLLECTOR_HOST}:${OTEL_COLLECTOR_PORT}`})
+  // metric reader
+  const otlpMetricReader = new PeriodicExportingMetricReader({
+    exporter: otlpMetricExporter,
+    exportIntervalMillis: 15*1000 // 15 s
+  })
+  metricReaders.push(otlpMetricReader/* otlp metric reader */)
 }
 
 // Log exporters
@@ -71,7 +84,7 @@ const sdk = new NodeSDK({
   }),
 
   // TODO: Task 2 - Meter provider with metric reader configured
-  
+  metricReaders: metricReaders,
 
   // Configure span processor
   spanProcessors: [ otlpTraceProcessor, /*consoleTraceProcessor */ ],

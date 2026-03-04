@@ -12,7 +12,8 @@ const metadata = require('../package.json')
 const serviceName = metadata.name
 const serviceVersion = metadata.version
 
-const observeInFlight = function(cb) {
+// callback function is passed a parameter
+const observeInFlight = function(guage) {
   const reqs = getInflights()
   const urls = Object.keys(reqs)
   for (let i = 0; i < urls.length; i++) {
@@ -23,12 +24,13 @@ const observeInFlight = function(cb) {
     }
     
     //TODO: Task 4 - record inflight request with cb
-    
+    console.info(`>>>observe inflight ${urls[i]} = ${reqs[urls[i]]}`)
+    guage.observe(reqs[urls[i]], attributes)
   }
 }
 
 // TODO: Task 4 - httpRequestInflightTotal - use the observeInFlight as callback
-
+httpRequestInflightTotal.addCallback(observeInFlight)
 
 function BooksAPI(booksDB, logger) {
 
@@ -52,14 +54,19 @@ function BooksAPI(booksDB, logger) {
     resp.on('close', () => {
       
       //TODO: Task 4 Create attributes for metrics
-
+      const attributes = {
+        [ ATTR_HTTP_REQUEST_METHOD ]: req.method,
+        [ ATTR_URL_PATH ]: path,
+        [ ATTR_HTTP_RESPONSE_STATUS_CODE ]: resp.statusCode
+      }
       
       //TODO: Task 4 - httpRequestTotal - Count the number of request
+      httpRequestTotal.add(1, {...attributes})
 
       const latency = Date.now() - req.startTime
 
       //TODO: httpRequestDurationMs - Record request duration
-      
+      httpRequestDurationMs.record(latency, {...attributes})
 
       // Decrement the number of inflight request
       updateInflight(req.method, path, -1)

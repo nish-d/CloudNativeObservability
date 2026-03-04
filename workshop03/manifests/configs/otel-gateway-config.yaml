@@ -11,8 +11,17 @@ extensions:
  # TODO: Configure spanmetrics with the following buckets
  #    [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s]
 
+connectors:
+  spanmetrics:
+    exemplars:
+      enabled: true
+    dimensions:
+      - name: http.method
+      - name: http.route
+      - name: http.status_code
+    aggregation_temporality: "AGGREGATION_TEMPORALITY_CUMULATIVE"
 
-# Processors 
+# Processors
 processors:
   batch:
   memory_limiter:
@@ -22,16 +31,17 @@ processors:
     # Triggers GC
     spike_limit_mib: 410
     # check every 5s, default is 1s
-    check_interval: 5
-    
+    check_interval: 5s
+
   transform:
     error_mode: ignore
     log_statements:
-    - context: log
-      statements:
-      - set(resource.attributes["db.collection.name"], "unknown") 
-      - set(resource.attributes["db.collection.name"], log.attributes["db.collection.name"])
-      - set(resource.attributes["severity"], log.severity_text)
+      - context: log
+        statements:
+          - set(resource.attributes["severity"], "warn")
+          - set(resource.attributes["severity"], log.severity_text)
+          - set(resource.attributes["service.name"], attributes["service.name"])
+          - set(resource.attributes["service.version"], attributes["service.version"])
 
 # Receivers - otlp
 receivers:
@@ -46,13 +56,19 @@ receivers:
 exporters:
 
   # TODO: Task 1 - add Prometheus metric endpoint
-
+  prometheus:
+    endpoint: 0.0.0.0:9090
+    metric_expiration: 120m0s
+    send_timestamps: true
+    enable_open_metrics: true
+    resource_to_telemetry_conversion:
+      enabled: false
 
   otlphttp/loki:
     endpoint: http://loki:3100/otlp
     tls:
       insecure: true
-  
+
   otlp/jaeger:
     endpoint: jaeger:4317
     tls:
@@ -78,7 +94,10 @@ service:
 
     # TODO: Task 1 - Create metric pipeline
       # TODO: Task 6 - Add spanmetrics as receiver to metrics
-      
+    metrics:
+      receivers: [ spanmetrics, otlp ]
+      processors: [ batch, memory_limiter ]
+      exporters: [ prometheus, debug ]
       
     logs:
       receivers: [ otlp ]
@@ -88,6 +107,6 @@ service:
     traces:
       receivers: [ otlp ]
       processors: [ batch, memory_limiter ]
-      
+
       # TODO: Task 6 - Add spanmetrics as exporter to traces
-      exporters: [ otlp/jaeger, otlp/tempo, debug ]
+      exporters: [ otlp/jaeger, otlp/tempo, debug, spanmetrics ]

@@ -7,19 +7,31 @@ const HTTP_REQUEST_INFLIGHT_TOTAL = 'http_request_inflight_total'
 const HTTP_REQUEST_DURATION_MS = 'http_request_duration_ms'
 
 // TODO: Task 3 - Get metrics provider
-
+const metricProvider = metrics.getMeter(metadata.name, metadata.version)
 
 // TODO: Task 3 - Create counter metrics for HTTP_REQUEST_TOTAL
-const httpRequestTotal = function() { }
-
+const httpRequestTotal = metricProvider.createCounter(
+    HTTP_REQUEST_TOTAL, {
+      description: 'Total number of requests',
+      unit: 'int'
+    }
+)
 
 // TODO: Task 3 - Create histogram metrics for HTTP_REQUEST_DURATION_MS
-const httpRequestDurationMs = function() { }
-
+const httpRequestDurationMs = metricProvider.createHistogram(
+    HTTP_REQUEST_DURATION_MS, {
+      description: 'request Duration of http requests in milliseconds',
+      unit: 'ms'
+    }
+)
 
 // TODO: Task 3 - Create gauge metrics for HTTP_REQUEST_INFLIGHT_TOTAL
-const httpRequestInflightTotal = function() { }
-
+const httpRequestInflightTotal = metricProvider.createObservableGauge(
+    HTTP_REQUEST_INFLIGHT_TOTAL, {
+      description: 'Total number of inflight requests',
+      unit: 'int'
+    }
+)
 
 // TODO: Task 3 - Export the metrics
 module.exports = { 
