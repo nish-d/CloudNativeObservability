@@ -60,7 +60,7 @@ spec:
         requests:
           storage: 1Gi
       # TODO: Task 4 - Change this to an appropriate storageClassName
-      storageClassName: csi-hostpath-sc     
+      storageClassName: do-block-storage
   template:
     metadata:
       labels:

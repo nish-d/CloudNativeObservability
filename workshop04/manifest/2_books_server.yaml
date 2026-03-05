@@ -89,7 +89,7 @@ spec:
     port: 8000
   hostnames:
   #TODO: Task 3 - change the TRAEFIK_IP to the load balancer IP address
-  - api-TRAEFIK_IP.nip.io
+  - api-104.248.98.110.nip.io
 
   rules:
   - matches:

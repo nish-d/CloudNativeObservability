@@ -90,7 +90,7 @@ spec:
     spec:
       accessModes: [ ReadWriteOncePod ]
       # TODO: Task 4 - Change this to an appropriate storageClassName
-      storageClassName: csi-hostpath-sc
+      storageClassName: do-block-storage
       resources:
         requests:
           storage: 1Gi
@@ -148,7 +148,7 @@ spec:
     port: 8000
   hostnames:
   #TODO: Task 4 - change the TRAEFIK_IP to the load balancer IP address
-  - books-TRAEFIK_IP.nip.io
+  - books-104.248.98.110.nip.io
 
   rules:
   - matches:
