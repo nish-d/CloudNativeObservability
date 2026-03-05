@@ -3,10 +3,10 @@ persistence:
   enabled: true
 
   # TODO: Task 1 - change this to a specicific storage class
-  storageClassName: csi-hostpath-sc  # on minikube
+  storageClassName: do-block-storage  # on minikube
   accessModes:
   - ReadWriteOncePod
-  size: 10Gi  # Adjust size as needed
+  size: 5Gi  # Adjust size as needed
   enableStatefulSetAutoDeletePVC: true
 
 tempo:
@@ -48,7 +48,7 @@ tempo:
     enabled: true
     # From kube-prometheus-stack
     # TODO: Task 1 - Update __PROMETHEUS_ENDPOINT__ with the Prometheus service name, /api/v1/write
-    remotewriteurl: __PROMETHEUS_ENDPOINT__
+    remotewriteurl: http://prom-stack-kube-prometheus-prometheus.monitoring:9090/api/v1/write
 
     #config:
     #  generate_native_histograms: both

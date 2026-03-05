@@ -7,7 +7,7 @@ metadata:
 spec:
   hostnames:
   #TODO: Task 1 - change the TRAEFIK_IP to the load balancer IP address
-  - prometheus-TRAEFIK_IP.nip.io
+  - prometheus-104.248.98.110.nip.io
   parentRefs:
   - name: traefik-gateway
     namespace: traefik
@@ -30,7 +30,7 @@ metadata:
 spec:
   hostnames:
   #TODO: Task 1 - change the TRAEFIK_IP to the load balancer IP address
-  - grafana-TRAEFIK_IP.nip.io
+  - grafana-104.248.98.110.nip.io
   parentRefs:
   - name: traefik-gateway
     namespace: traefik

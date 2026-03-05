@@ -26,9 +26,7 @@ helm install loki grafana/loki -nloki --create-namespace -f ./values-loki.yaml
 
 # Install Open Telemetry Operator
 https://opentelemetry.io/docs/platforms/kubernetes/helm/operator/
-helm install my-opentelemetry-operator open-telemetry/opentelemetry-operator \
-  -f ./values-oteloperator.yaml \
-  -notel --create-namespace
+helm install my-opentelemetry-operator open-telemetry/opentelemetry-operator -f ./values-oteloperator.yaml -notel --create-namespace
 
 # Expose Grafana and Prometheus
 kubectl apply -f prom-http-routes.yaml
@@ -37,3 +35,4 @@ kubectl apply -f prom-http-routes.yaml
 kubectl get secret/prom-stack-grafana -nmonitoring -ojsonpath='{.data.admin-user}' | base64 -d -
 kubectl get secret/prom-stack-grafana -nmonitoring -ojsonpath='{.data.admin-password}' | base64 -d -
 
+kubectl get secret --namespace monitoring -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
