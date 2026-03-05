@@ -23,7 +23,7 @@ processors:
   batch: {}
   memory_limiter:
     # maximum memory usage
-    limit_mib: 2048
+    limit_mib: 512
     # Maximum spike between measured memory usage
     # Triggers GC
     spike_limit_mib: 410
@@ -55,7 +55,7 @@ receivers:
 # Exporters - for Loki, Tempo, Prometheus, debug
 exporters:
 
-  # TODO: Task 2 - configure Prometheus remote write endpoint - /api/v1/write
+  # TODO: Task 5 - configure Prometheus remote write endpoint - /api/v1/write
 
   prometheus:
     endpoint: 0.0.0.0:9090
@@ -67,13 +67,14 @@ exporters:
 
   otlphttp/loki:
     # TODO: Task 2 - configure Loki endpoint
-    endpoint: __LOKI_ENDPOINT__
+    # FQDN
+    endpoint: http://loki.loki.svc.cluster.local:3100/otlp
     tls:
       insecure: true
   
   otlp/tempo:
     # TODO: Task 2 - configure Tempo endpoint
-    endpoint: __TEMPO_ENDPOINT__
+    endpoint: tempo.tempo.svc.cluster.local:4317
     tls:
       insecure: true
 

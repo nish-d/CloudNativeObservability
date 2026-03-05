@@ -69,9 +69,9 @@ processors:
 receivers:
   filelog:
     exclude:
-    - /var/log/pods/node-otelcol_my-otel-collector-opentelemetry-collector*_*/opentelemetry-collector/*.log
+    - /hostfs/var/log/pods/node-otelcol_my-otel-collector-opentelemetry-collector*_*/opentelemetry-collector/*.log
     include:
-    - /var/log/pods/*/*/*.log
+    - /hostfs/var/log/pods/*/*/*.log
 
     start_at: end
     retry_on_failure:
@@ -157,20 +157,20 @@ exporters:
   debug:
     verbosity: detailed
   otlp/traces:
-    # TODO: Task 3 - Gateway collector endpoint
-    endpoint: __GATEWAY_COLLECTOR_HERE__
+    # TODO: Task 3 - Gateway collector endpoint - DONE
+    endpoint: gateway-collector.books-ns.svc.cluster.local:4317
 
     tls:
       insecure: true
   otlp/metrics:
-    # TODO: Task 3 - Gateway collector endpoint
-    endpoint: __GATEWAY_COLLECTOR_HERE__
+    # TODO: Task 3 - Gateway collector endpoint- DONE
+    endpoint: gateway-collector.books-ns.svc.cluster.local:4317
 
     tls:
       insecure: true
   otlp/logs:
-    # TODO: Task 3 - Gateway collector endpoint
-    endpoint: __GATEWAY_COLLECTOR_HERE__
+    # TODO: Task 3 - Gateway collector endpoint- DONE
+    endpoint: gateway-collector.books-ns.svc.cluster.local:4317
 
     tls:
       insecure: true
