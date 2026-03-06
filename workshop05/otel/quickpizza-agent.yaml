@@ -3,7 +3,7 @@ apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: log-otelcol
-  namespace: otel
+  namespace: quickpizza
 spec:
   mode: daemonset
   image: otel/opentelemetry-collector-contrib:latest
@@ -171,7 +171,9 @@ spec:
     exporters:
       otlp:
         #TODO: Task 2 - configure the correct endpoint, use 4317
-        endpoint: __COLLECTOR_ENDPOINT__
+        endpoint: quickpizza-gateway-collector.quickpizza.svc.cluster.local:4317
+        tls:
+          insecure: true
 
     service:
       pipelines:

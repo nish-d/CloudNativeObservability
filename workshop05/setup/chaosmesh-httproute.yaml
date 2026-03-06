@@ -25,7 +25,7 @@ spec:
     port: 8000
   hostnames:
   #TODO: change to TRAEFIK IP address
-  - chaos-TRAEIK_IP.nip.io
+  - chaos-104.248.98.110.nip.io
   rules:
   - matches:
     - path:

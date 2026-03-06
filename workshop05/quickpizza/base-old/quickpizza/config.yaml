@@ -1,26 +1,23 @@
-# service.name: 'copy'
-# service.component: 'copy' (defined in app code)
+# service.name: 'config'
+# service.component: 'config' (defined in app code)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   # unique name for this deployment resource
-  name: quickpizza-copy
-  labels: &copyLabels # application name: groups all related resources
+  name: quickpizza-config
+  labels: &configLabels # application name: groups all related resources
     app.k8s.io/name: quickpizza
     # component type: defines the role of this deployment
     app.kubernetes.io/component: service
     # instance id: used for service discovery and telemetry (service.name/service_name attrs)
-    app.kubernetes.io/instance: copy
+    app.kubernetes.io/instance: config
 spec:
   replicas: 1
   selector:
-    matchLabels: *copyLabels
+    matchLabels: *configLabels
   template:
     metadata:
-      labels: *copyLabels
-      annotations:
-        instrumentation.opentelemetry.io/inject-go: quickpizza/quickpizza-instrument
-        instrumentation.opentelemetry.io/otel-go-auto-target-exe: /bin/quickpizza
+      labels: *configLabels
     spec:
       containers:
         - name: quickpizza
@@ -35,7 +32,7 @@ spec:
                 name: quickpizza-env
                 optional: true
           env:
-            - name: QUICKPIZZA_ENABLE_COPY_SERVICE
+            - name: QUICKPIZZA_ENABLE_CONFIG_SERVICE
               value: "1"
             - name: QUICKPIZZA_OTEL_SERVICE_INSTANCE_ID
               valueFrom:
@@ -46,15 +43,15 @@ spec:
                 fieldRef:
                   fieldPath: metadata.labels['app.kubernetes.io/instance']
 ---
-# Configures value for QUICKPIZZA_COPY_ENDPOINT (set in kustomization.yaml)
+# Configures value for QUICKPIZZA_CONFIG_ENDPOINT (set in kustomization.yaml)
 apiVersion: v1
 kind: Service
 metadata:
-  name: quickpizza-copy
+  name: quickpizza-config
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/instance: copy
+    app.kubernetes.io/instance: config
   ports:
     - protocol: TCP
       port: 3333

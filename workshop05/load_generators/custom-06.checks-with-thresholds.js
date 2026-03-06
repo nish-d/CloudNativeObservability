@@ -2,7 +2,7 @@ import http from "k6/http";
 import { check, sleep } from "k6";
 import { Trend, Counter } from "k6/metrics";
 
-const BASE_URL = __ENV.BASE_URL || 'http://localhost:3333';
+const BASE_URL = __ENV.BASE_URL || 'http://quickpizza-public-api-104.248.98.110.nip.io';
 
 export const options = {
   scenarios: {

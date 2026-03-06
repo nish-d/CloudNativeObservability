@@ -4,7 +4,7 @@ apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: quickpizza-gateway
-  namespace: otel
+  namespace: quickpizza
 spec:
   mode: deployment
   image: otel/opentelemetry-collector-contrib:latest
@@ -112,7 +112,7 @@ spec:
 
       prometheusremotewrite:
         # TODO: Task 2 - Check Prometheus write endpoint. Use path /api/v1/write
-        endpoint: __PROMETHEUS_WRITE_ENDPOINT__
+        endpoint: http://prom-stack-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
         resource_to_telemetry_conversion:
           enabled: false
 

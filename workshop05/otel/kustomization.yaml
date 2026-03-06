@@ -6,4 +6,4 @@ resources:
 - quickpizza-gateway.yaml
 - quickpizza-agent.yaml
 
-namespace: otel
+namespace: quickpizza

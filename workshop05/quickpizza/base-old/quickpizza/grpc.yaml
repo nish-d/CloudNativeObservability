@@ -18,9 +18,6 @@ spec:
   template:
     metadata:
       labels: *grpcLabels
-      annotations:
-        instrumentation.opentelemetry.io/inject-go: quickpizza/quickpizza-instrument
-        instrumentation.opentelemetry.io/otel-go-auto-target-exe: /bin/quickpizza
     spec:
       containers:
         - name: quickpizza

@@ -40,7 +40,7 @@ spec:
         # TODO: Task 5 - add labels  and annotations
       annotations:
         prometheus.io/scrape: 'true'
-        prometheus.io/port: '9104'
+        prometheus.io/port: '5050'
     spec:
       containers:
       - name: booksserver-container

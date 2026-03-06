@@ -10,5 +10,5 @@ helm install chaos-mesh chaos-mesh/chaos-mesh -nchaos-mesh --create-namespace -f
 kubectl apply -f /chaosmesh-httproute.yaml
 
 # Create access token for 1 day
-kubectl create token chaos-dashboard -nchaos-mesh --duration=86400s | tee /opt/tmp/chaos-dashboard-token.txt
+kubectl create token chaos-dashboard -nchaos-mesh --duration=86400s | tee chaos-dashboard-token.txt
 

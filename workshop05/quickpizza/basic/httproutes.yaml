@@ -10,7 +10,7 @@ spec:
     port: 8000
   hostnames:
   # TODO: Task 2 - Replace with Traefik's loadbalancer IP
-  - quickpizza-public-api-TRAEFIK_IP.nip.io
+  - quickpizza-public-api-104.248.98.110.nip.io
   rules:
   - matches:
     - path: 
@@ -32,7 +32,7 @@ spec:
     port: 8000
   hostnames:
   # TODO: Task 2 - Replace with Traefik's loadbalancer IP
-  - quickpizza-grpc-TRAEFIK_IP.nip.io
+  - quickpizza-grpc-104.248.98.110.nip.io
   rules:
   - matches:
     - path: 

@@ -1,26 +1,26 @@
-# service.name: 'copy'
-# service.component: 'copy' (defined in app code)
+# service.name: 'catalog'
+# service.component: 'catalog', 'admin', 'users' (defined in app code)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   # unique name for this deployment resource
-  name: quickpizza-copy
-  labels: &copyLabels # application name: groups all related resources
+  name: quickpizza-catalog
+  labels: &catalogLabels # application name: groups all related resources
     app.k8s.io/name: quickpizza
     # component type: defines the role of this deployment
     app.kubernetes.io/component: service
     # instance id: used for service discovery and telemetry (service.name/service_name attrs)
-    app.kubernetes.io/instance: copy
+    app.kubernetes.io/instance: catalog
 spec:
   replicas: 1
   selector:
-    matchLabels: *copyLabels
+    matchLabels: *catalogLabels
   template:
     metadata:
-      labels: *copyLabels
+      labels: *catalogLabels
       annotations:
         instrumentation.opentelemetry.io/inject-go: quickpizza/quickpizza-instrument
-        instrumentation.opentelemetry.io/otel-go-auto-target-exe: /bin/quickpizza
+        go.opentelemetry.io/target-exe: /bin/quickpizza
     spec:
       containers:
         - name: quickpizza
@@ -35,7 +35,7 @@ spec:
                 name: quickpizza-env
                 optional: true
           env:
-            - name: QUICKPIZZA_ENABLE_COPY_SERVICE
+            - name: QUICKPIZZA_ENABLE_CATALOG_SERVICE
               value: "1"
             - name: QUICKPIZZA_OTEL_SERVICE_INSTANCE_ID
               valueFrom:
@@ -46,15 +46,15 @@ spec:
                 fieldRef:
                   fieldPath: metadata.labels['app.kubernetes.io/instance']
 ---
-# Configures value for QUICKPIZZA_COPY_ENDPOINT (set in kustomization.yaml)
+# Configures value for QUICKPIZZA_CATALOG_ENDPOINT (set in kustomization.yaml)
 apiVersion: v1
 kind: Service
 metadata:
-  name: quickpizza-copy
+  name: quickpizza-catalog
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/instance: copy
+    app.kubernetes.io/instance: catalog
   ports:
     - protocol: TCP
       port: 3333
