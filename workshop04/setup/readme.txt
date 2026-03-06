@@ -19,6 +19,7 @@ helm install prom-stack prometheus-community/kube-prometheus-stack -nmonitoring 
 # Install Tempo
 IMPORTANT: update the storageClass in values-tempo.yaml and the Prometheus write endpoint in values-tempo.yaml before installing
 helm install tempo grafana/tempo -ntempo --create-namespace -f ./values-tempo.yaml
+helm upgrade tempo grafana/tempo -ntempo -f ./values-tempo.yaml
 
 # Install Loki
 IMPORTANT: update the storageClass in values-loki.yaml before running the command
